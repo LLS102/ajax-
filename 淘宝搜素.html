@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script src="./jq/jquery.js"></script>
+<script src="./art-template/template-web.js"></script>
+<body>
+    <input type="text" name="" id="ipt">
+    <button class="btn">搜索</button>
+    <div class="list">
+        <ul class="list-group" id="cmt-list">
+        
+        </ul>
+    </div>
+</body>
+<script>
+    $(function(){
+        var timer=null;/* 定义延时器 */
+        var cachObj={}/* 定义缓存对象 */
+
+        /* 防抖函数 不用多次请求服务器，打完字再请求推荐内容,原来是打一个拼音请求一次，现在打一个拼音 延时 再打一个拼音 如果下一个打的拼音再500这个时间里面打完，就执行一次，否则请求两次*/
+        function deSearch(kw){
+           timer=setTimeout(function(){
+                /* 延时请求 */
+                getList(kw)
+            }, 500);
+        }
+        $('#ipt').on('keyup',function(){
+            clearTimeout(timer)
+            var keyWords=$(this).val().trim()
+            if(keyWords.lenth<=0){
+                return $("#cmt-list").empty().hide()
+            }
+            console.log(keyWords);
+           /*  getList(keyWords) */
+           /* 判断缓存是否有数据 */
+           if(cachObj[keyWords]){
+            return sc(cachObj[keyWords])
+           }
+           deSearch(keyWords)
+        })
+        var data=''
+        function getList(kw){
+            $.ajax({
+                url:'https://suggest.taobao.com/sug?q='+kw,
+                dataType:"jsonp",
+                success:function(res){
+                    /* console.log(res) */
+                    if(res.result.lenth<=0){
+                        return $("#cmt-list").empty().hide()
+                    }
+                    sc(res)
+                    
+                }
+            })
+        }
+        /* 输出建议内容 */
+        function sc(res){
+            var data=res
+            console.log(data);
+            var str=template("wordsList",data)
+            $("#cmt-list").html(str).show()
+
+
+            /* 获取用户输入内容 */
+            var k=$("#ipt").val().trim()
+            /* 将数据作为值进行缓存 */
+            cachObj[k]=res
+        }
+        
+    
+   
+
+    })
+</script>
+<script type="text/html" id="wordsList">
+    {{each result}}
+    <li class="splist">
+        {{$value[0]}}
+    </li>
+    {{/each}}
+    
+
+</script>
+</html>

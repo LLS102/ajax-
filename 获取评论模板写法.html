@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./bootstrap/dist/css/bootstrap.css">
+    <script src="./jq/jquery.js"></script>
+    <script src="./art-template/template-web.js"></script><!-- 1导入 -->
+</head> 
+<script>
+    $(function(){
+        getcommentlist();
+        function getcommentlist(){
+            $.ajax({
+                method:"get",
+                url:"http://www.liulongbin.top:3006/api/cmtlist",
+                success:function(res){
+                    console.log(res);
+                    if(res.status!==200){
+                        return alert("获取失败")
+                    }else{
+                        var str=template("tql-list",res)
+                        $(".list-group").html(str)
+                    }
+                }
+            })
+        }
+        $("#formaddcmt").submit(function(e){
+            e.preventDefault()
+            /* 获取表单数据 */
+            var data=$(this).serialize()
+            console.log(data);
+            $.post('http://www.liulongbin.top:3006/api/addcmt',data,function(res){
+                if(res.status!==201){
+                    return alert("发送失败")
+                }
+                getcommentlist();
+                /* jq转js */
+                $("#formaddcmt")[0].reset()
+            })
+
+         
+        })
+    })
+</script>
+<body>
+    <!-- 评论面板 -->
+    
+    <div class="panel panel-primary">
+          <div class="panel-heading">
+                <h3 class="panel-title">发表评论</h3>
+          </div>
+          <form class="panel-body" id="formaddcmt">
+                <div>评论人</div>
+                <input type="text" class="form-control" name="username">
+                <div>评论内容</div>
+                <textarea class="form-control" name="content"></textarea>
+                <button type="submit" class="btn btn-primary">发表</button>
+          </form>
+    </div>
+     <!-- 评论面板 -->
+     
+     <ul class="list-group" id="cmt-list">
+        
+        
+     </ul>
+     
+    
+    
+</body>
+<!-- 2定义模板 -->
+<script type="text/html" id="tql-list">
+    {{each data}}
+    <li class="list-group-item">
+        <!-- 循环遍历获得的res里的data -->
+        {{$value.content}}
+        <span class="badge">评论时间{{$value.time}}</span>
+        <span class="badge">评论人{{$value.username}}</span>
+        {{/each}}
+    </li>
+
+</script>
+</html>

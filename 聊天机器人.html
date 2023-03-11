@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .fl{
+            float: left;
+        }
+        .clearfixd:after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+        .box{
+            height: 1000px;
+            width: 1000px;
+            overflow: hidden;
+            margin-top: 50px;
+        }
+        .box .phone{
+            height: 520px;
+            width: 280px;
+            margin:50px auto;
+            background:grey;
+            border-radius: 10px;
+        }
+        .box .phone .top{
+            width: 60px;
+            height: 20px;
+            margin: 0 auto;
+            border-bottom: 4px solid black;
+            margin-bottom: 20px;
+        }
+        .box .phone .bottom{
+            height: 435px;
+            width: 250px;
+            margin: 0 auto;
+            background: whitesmoke;
+        }
+        .box .phone .bottom .chat{
+            height: 390px;
+            width: 230px;
+            margin: 0 auto;
+            overflow-y:auto; 
+            overflow-x:auto;
+        }
+        .box .phone .bottom .chat ul{
+            list-style: none;
+            width: 230px;
+        }
+        .box .phone .bottom .chat ul li{
+            padding-top: 10px;
+            width: 230px;
+        }
+
+        .box .phone .bottom .chat .text1{
+            width: 190px;
+            font: 14px "微软雅黑";
+            line-height: 20px;
+            border-radius: 5px;
+            padding: 10px 0;
+            background: rgb(126, 124, 128);
+        }
+        .box .phone .bottom .chat .imag1{
+            height: 30px;
+            width: 40px;
+            background-size: 28px 28px;
+            margin-top: 5px;
+        }
+        .box .phone .bottom .diolog{
+            margin: 6px auto;
+            height: 33px;
+            width: 220px;
+        }
+        .box .phone .bottom .diolog .left{
+            height: 33px;
+            width: 33px;
+            background-size: 33px 33px;
+        }
+
+        .box .phone .bottom .diolog .txt{
+            height: 33px;
+            width: 147px;
+            border-radius: 7px;
+            background: white;
+            margin-left: 3px;
+            border: none;
+        }
+        .box .phone .bottom .diolog .send{
+            height: 33px;
+            width: 32px;
+            line-height: 33px;
+            font-size: 12px;
+            padding-left: 5px;
+            color: red;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="box">
+        <div class="phone">
+            <div class="top"></div>
+            <div class="bottom">
+                <div class="chat">
+                    <ul id="list" >
+                        <li class="clearfixd">
+                            <div class="text1 fl">
+                                第一段文字，单行
+                            </div>
+                            <img class="imag1 fl" src="images/icon1.png"></img>
+                        </li>
+                        <li class="clearfixd">
+                            <img class="imag1 fl" src="images/icon2.png"></img>
+                            <div class="text1 fl">
+                                第二段文字，多行哈哈哈哈哈哈
+                            </div>
+                        </li>
+                       
+
+                    </ul>
+                </div>
+                <div class="diolog">
+                    <img class="left fl" src="images/icon1.png"></img>
+                    <input class="txt fl"></input>
+                    <div class="send fl">发送</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var left =document.querySelector('.left');
+        var txt = document.querySelector('.txt');
+        var send = document.querySelector('.send');
+        var list = document.getElementById('list');
+
+
+        var user=1
+
+        left.onclick = function(){
+            if(user==1){
+                left.src ="images/icon2.png";
+                user=2;
+            }else {
+                left.src="images/icon1.png"
+                user=1;
+            }
+        }
+
+        send.onclick = function(){
+            if(user==1){
+                list.innerHTML+='<li class="clearfixd"><div class="text1 fl">'+
+                                txt.value +
+                            '</div><img class="imag1 fl" src="images/icon1.png"></img></li>'
+                txt.value='';
+                
+            }else{
+                list.innerHTML+='<li class="clearfixd"></div><img class="imag1 fl" src="images/icon2.png"></img><div class="text1 fl">'+ txt.value +'</div></li>'
+                txt.value='';
+            }
+            getMsg();
+            /* 获取聊天机器人消息 */
+            function getMsg(text){
+                $.ajax({
+                    method:"GET",
+                    url:"http://ajax.frontend.itheima.net:3006/api/robot",
+                    data:{
+                        spoken:text
+                    },
+                    success:function(res){
+                        console.log(res);
+
+                    }
+                })
+
+            }
+        }
+     </script>
+</body>
+</html>

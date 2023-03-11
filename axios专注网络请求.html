@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./axios/axios-min.js"></script>
+    <script src="./jq/jquery.js"></script>
+</head>
+<body>
+    <button id="btn">get</button>
+    <button id="btn2">post</button>
+    <button id="btn3">直接get</button>
+    
+</body>
+<script>
+    $(function(){
+        $("#btn").on("click",function(){
+            var url='http://liulongbin.top:3006/api/get'
+            var paramObj={name:"zs",age:20}
+            axios.get(url,{params:paramObj}).then(function(res){
+                console.log(res.data);
+            })
+        })
+        $("#btn2").on("click",function(){
+            var url='http://liulongbin.top:3006/api/post'
+            var paramObj={name:"zs",age:20}
+            axios.post(url,paramObj).then(function(res){
+                console.log(res.data);
+            })
+        })
+        $("#btn3").on("click",function(){
+            
+            var url='http://liulongbin.top:3006/api/get'
+            var paramObj={name:"zs",age:20}
+            axios({
+                method:"GET",
+                url:url,
+                params:paramObj,
+
+            }).then(function(res){
+                console.log(res.data);
+            })
+        })
+
+    })
+</script>
+</html>
